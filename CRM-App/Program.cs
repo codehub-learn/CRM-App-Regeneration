@@ -1,5 +1,7 @@
 ﻿using CRM_App.Database;
 using CRM_App.Model;
+using CRM_App.Option;
+using CRM_App.Scenario;
 using CRM_App.Service;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -7,52 +9,31 @@ using System.Collections.Generic;
 
 namespace CRM_App
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
-            using CrmDbContext db = new CrmDbContext();
-            CustomerService customerService = new(db);
-            //Customer customer = new()
-            //{
-            //    FirstName = "Christos",
-            //    LastName = "Christou",
-            //    Address = "Athens"
-            //};
 
-            //Console.WriteLine($"customerId = {customer.CustomerId}"
-            //    + $" FirstName = {customer.FirstName}");
+            //   CreatingCustomers 
 
-            //
-            //customer = customerService.CreateCustomer(customer);
-            //if (customer != null)
-            //{
-            //    Console.WriteLine($"customerId = {customer.CustomerId}"
-            //    + $" FirstName = {customer.FirstName}");
-
-            //}
-            //else
-            //{
-            //    Console.WriteLine("customer has not been created");
-
-            //}
-
-            //List<Customer> customers = customerService.ReadCustomers();
-
-            //foreach(Customer customer in customers)
-            //    {
-            //    Console.WriteLine(customer);
-            //}
-
-            Customer customer = new()
+            OptionCustomer optionCustomer = new OptionCustomer()
             {
-                Email = "ioannis@gmail",
-                Address = "Serres"
+                Address = "Athens",
+    
+
             };
 
-            Customer dbCustomer = customerService.UpdateCustomer(3, customer);
 
-            Console.WriteLine(dbCustomer);
+            using CrmDbContext db = new();
+            ICustomerService customerService = new CustomerService(db);
+
+            List<OptionCustomer> customers = customerService.ReadCustomer(optionCustomer);
+
+            customers.ForEach(customer =>
+                Console.WriteLine($"{customer.CustomerId} {customer.FirstName}"));
+
+           
+
 
         }
     }

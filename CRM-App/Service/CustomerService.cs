@@ -1,5 +1,6 @@
 ﻿using CRM_App.Database;
 using CRM_App.Model;
+using CRM_App.Option;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CRM_App.Service
 {
-    public class CustomerService
+    public class CustomerService:ICustomerService
     {
         private CrmDbContext db;
         
@@ -18,57 +19,72 @@ namespace CRM_App.Service
             db = _db;
         }
         
-        public Customer CreateCustomer(Customer customer)
+  
+        public OptionCustomer CreateCustomer(OptionCustomer optionCustomer)
         {
-
-
             //validation of the customer first
+            if (optionCustomer == null)
+            {
+                return null;
+            }
+            if (optionCustomer.Email == null)
+            {
+                return null;
+            }
+            Customer customer = optionCustomer.GetCustomer();
+            db.Customers.Add(customer);
+            db.SaveChanges();
+            return new OptionCustomer(customer);
+        }
+
+        public List<OptionCustomer> ReadCustomer()
+        {
+            List<Customer> customers = db.Customers.ToList();
+            List<OptionCustomer> optionCustomers = new();
+            customers.ForEach(customer => optionCustomers.Add(new OptionCustomer(customer)));
+            return optionCustomers;
+        }
+
+        public OptionCustomer ReadCustomer(int customerId)
+        {
+           Customer customer =  db.Customers.Find(customerId);
             if (customer == null)
             {
                 return null;
             }
-
-            if (customer.Email == null)
-            {
-                return null;
-            }
-
-            db.Customers.Add(customer);
-            db.SaveChanges();
-            return customer;
-
+            return new OptionCustomer(customer);
         }
 
-
-        public List<Customer> ReadCustomers()
+        public List<OptionCustomer> ReadCustomer(OptionCustomer optionCustomer)
         {
-            
-            return db.Customers.ToList();
+            List<Customer> customers = db.Customers
+                .Where(customer => customer.Address.Equals(optionCustomer.Address))
+                .ToList();
+            List<OptionCustomer> optionCustomers = new();
+            customers.ForEach(customer => optionCustomers.Add(new OptionCustomer(customer)));
+            return optionCustomers;
         }
 
-
-        public Customer UpdateCustomer(int customerId, Customer customer)
+        public OptionCustomer UpdateCustomer(int customerId, OptionCustomer optionCustomer)
         {
-             
             Customer dbCustomer = db.Customers.Find(customerId);
             if (dbCustomer == null) return null;
-            dbCustomer.Address = customer.Address;
-            dbCustomer.Email = customer.Email;
+            dbCustomer.Address = optionCustomer.Address;
+            dbCustomer.Email = optionCustomer.Email;
             db.SaveChanges();
 
-            return dbCustomer;
+            return new OptionCustomer( dbCustomer);
 
         }
-
 
         public bool DeleteCustomer(int customerId)
         {
-
-             
-            Customer dbCustomer = db.Customers.Find(customerId);
+           Customer dbCustomer = db.Customers.Find(customerId);
             if (dbCustomer == null) return false;
             db.Customers.Remove(dbCustomer);
             return true;
         }
+
+
     }
 }
