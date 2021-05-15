@@ -12,7 +12,7 @@ namespace CRM_App.Service
 {
     public class CustomerService:ICustomerService
     {
-        private CrmDbContext db;
+        private readonly CrmDbContext db;
         
         public CustomerService(CrmDbContext _db)
         {
