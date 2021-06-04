@@ -24,4 +24,8 @@
     <ProjectReference Include="..\CRM-App\CRM-Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Customer\" />
+  </ItemGroup>
+
 </Project>
