@@ -18,22 +18,5 @@ namespace CRM_App.Model
         public DateTime RegistrationDate { get; set; }
         public virtual List<Order> Orders { get; set; }
 
-
-
-        public override string ToString()
-        {
-            return base.ToString()
-                + CustomerId
-                + FirstName
-                + LastName
-                + Address
-                + Email
-                + Username
-                + Password
-                + RegistrationDate
-                + Orders;
-        }
-
-
     }
 }
