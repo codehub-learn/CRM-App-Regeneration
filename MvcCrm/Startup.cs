@@ -29,7 +29,12 @@ namespace MvcCrm
             services.AddControllersWithViews();
             services.AddDbContext<CrmDbContext>(
      options => options.UseSqlServer("Data Source=localhost;Initial Catalog=RegenerationCrm;Integrated Security=True"));
+         
             services.AddScoped<ICustomerService, CustomerService>();
+
+         
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

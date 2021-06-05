@@ -37,7 +37,8 @@ $('#CreateCustomer').on('click',
 
             console.log('The registration was  successful');
             $('#responseDiv').html('The registration was  successful');
-
+            alert('The registration was  successful')
+            window.open('/customers/index', '_self');
 
         }).fail(failure => {
 
@@ -51,3 +52,31 @@ $('#CreateCustomer').on('click',
 
     }
 );
+
+
+
+function loadCustomers() {
+
+    $.ajax({
+        url: `/api/Customers1/optionCustomer`,
+        method: 'GET',
+        contentType: 'application/json'
+    }).done(response => {
+
+        let divText= "<ul>"
+        response.forEach(function (item) {
+             divText = divText + "<li>" + item.firstName + "</li>"
+        } )
+        divText = divText + "</ul>"
+      
+        $('#CustomersContent').html(divText)
+    }).fail(failure => {
+
+        $('#CustomersContent').html('Error in the communication')
+    }).always(response => {
+        console.log(response);
+    });
+}
+
+
+

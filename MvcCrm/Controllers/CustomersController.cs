@@ -149,5 +149,11 @@ namespace MvcCrm.Controllers
         {
             return _context.Customers.Any(e => e.CustomerId == id);
         }
+
+        // Customers/GetCustomers
+        public IActionResult  GetCustomers()
+        {
+            return View();
+        }
     }
 }

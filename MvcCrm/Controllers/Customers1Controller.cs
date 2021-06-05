@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CRM_App.Database;
 using CRM_App.Model;
+using CRM_App.Service;
+using CRM_App.Option;
 
 namespace MvcCrm.Controllers
 {
@@ -16,10 +18,21 @@ namespace MvcCrm.Controllers
     {
         private readonly CrmDbContext _context;
 
-        public Customers1Controller(CrmDbContext context)
+        private readonly ICustomerService _custService;
+
+        public Customers1Controller(CrmDbContext context, ICustomerService custService)
         {
             _context = context;
+            _custService = custService;
         }
+
+        // GET: api/Customers1/optionCustomer
+        [HttpGet("optionCustomer")] 
+        public   List<OptionCustomer> GetOptionCustomers()
+        {
+            return _custService.ReadCustomer();
+        }
+
 
         // GET: api/Customers1
         [HttpGet]
