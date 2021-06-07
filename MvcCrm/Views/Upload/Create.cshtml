@@ -1,0 +1,85 @@
+﻿@model ProductWithImageModel
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>Upload image</h1>
+
+
+<div id="responseDiv"></div>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ImageCaption" class="control-label"></label>
+                <input asp-for="ImageCaption" class="form-control" id="ImageCaption" />
+                <span asp-validation-for="ImageCaption" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImageDescription" class="control-label"></label>
+                <input asp-for="ImageDescription" class="form-control" id="ImageDescription" />
+                <span asp-validation-for="ImageDescription" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="MyImage" class="control-label"></label>
+                <input asp-for="MyImage" class="form-control" id="MyImage" />
+                <span asp-validation-for="MyImage" class="text-danger"></span>
+            </div>
+
+            <input type="submit" />
+            <div class="form-group">
+                <input type="button" value="Submit using ajax" onclick="douUpload()" />
+            </div>
+
+
+        </form>
+
+ 
+    </div>
+</div>
+<div id="responseDiv"></div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+<script>
+
+
+    function douUpload() {
+        actionMethod = "POST"
+        actionUrl = "/Upload/CreateFromAjaxWithFormData"
+        var formData = new FormData();
+        for (var i = 0; i < $('#MyImage').length; i++) {
+            formData.append("MyImage", $('#MyImage')[0].files[i]);
+        }
+        formData.append("ImageCaption", $('#ImageCaption').val());
+        formData.append("ImageDescription", $('#ImageDescription').val());
+        console.log(JSON.stringify(Object.fromEntries(formData)));
+
+        //alert(JSON.stringify(Object.fromEntries(formData)))
+        $.ajax({
+            url: actionUrl,
+            dataType: 'json',
+            type: actionMethod,
+            data: formData,
+            contentType: false,  // important when sending formData
+            processData: false,
+            success: function (data) {
+                console.log(data)
+                $('#responseDiv').html("The update has been made successfully " + data.name);
+            },
+            error: function (jqXhr, textStatus, errorThrown) {
+                console.log("error in communication");
+            }
+        });
+    }
+
+
+
+</script>

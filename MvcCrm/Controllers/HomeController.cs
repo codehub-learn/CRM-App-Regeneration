@@ -26,9 +26,12 @@ namespace MvcCrm.Controllers
 
         public IActionResult Index()
         {
+            /*
             Customer customer = new Customer()
             {
                 FirstName = "Dimitris",
+                Password="1234",
+                Username="Dimitris"
             };
             _context.Customers.Add(customer);
             Order order2  =new() {  Date = DateTime.Now,
@@ -44,6 +47,7 @@ namespace MvcCrm.Controllers
 
             Customer customerR = order.Customer;
             Console.WriteLine(customerR.FirstName);
+            */
 
             return View();
         }

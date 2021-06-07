@@ -1,5 +1,6 @@
 using CRM_App.Database;
 using CRM_App.Service;
+using CRM_App.Service.implementations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,11 +29,24 @@ namespace MvcCrm
         {
             services.AddControllersWithViews();
             services.AddDbContext<CrmDbContext>(
-     options => options.UseSqlServer("Data Source=localhost;Initial Catalog=RegenerationCrm;Integrated Security=True"));
-         
-            services.AddScoped<ICustomerService, CustomerService>();
+                options => options.UseSqlServer
+                ("Data Source=localhost;Initial Catalog=RegenerationCrm;Integrated Security=True"));
 
-         
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<IStatisticsService, StatisticsService>();
+
+            //1 For session management
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(600);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            //
+
 
 
         }
@@ -56,6 +70,10 @@ namespace MvcCrm
             app.UseRouting();
 
             app.UseAuthorization();
+
+            //2 added for session management
+            app.UseSession();
+
 
             app.UseEndpoints(endpoints =>
             {

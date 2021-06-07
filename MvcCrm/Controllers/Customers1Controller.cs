@@ -19,16 +19,25 @@ namespace MvcCrm.Controllers
         private readonly CrmDbContext _context;
 
         private readonly ICustomerService _custService;
+        private readonly IStatisticsService _statService;
 
-        public Customers1Controller(CrmDbContext context, ICustomerService custService)
+
+       
+
+
+
+        public Customers1Controller(CrmDbContext context,
+            ICustomerService custService,
+            IStatisticsService statService)
         {
             _context = context;
             _custService = custService;
+            _statService = statService;
         }
 
         // GET: api/Customers1/optionCustomer
-        [HttpGet("optionCustomer")] 
-        public   List<OptionCustomer> GetOptionCustomers()
+        [HttpGet("optionCustomer")]
+        public List<OptionCustomer> GetOptionCustomers()
         {
             return _custService.ReadCustomer();
         }
@@ -117,5 +126,48 @@ namespace MvcCrm.Controllers
         {
             return _context.Customers.Any(e => e.CustomerId == id);
         }
+
+        // GET: api/Customers1/Statistics/5
+        [HttpGet("Statistics/{id}")]
+        public async Task<ActionResult<Statistics>> GetStatistics(int id)
+        {
+            Customer customer = await _context.Customers.FindAsync(id);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return _statService.GetStatistics(id);
+        }
+
+
+
+
+        //Post: api/Customers1/Login
+        [HttpPost("Login")]
+        public ActionResult<Customer> Login(OptionCustomer customer)
+        {
+            if (customer == null) return NotFound();
+            Customer retCust = _context.Customers
+                .Where(cust => cust.Username.Equals(customer.Username) &&
+                cust.Password.Equals(customer.Password))
+                 .FirstOrDefault();
+
+            if (retCust == null) return NotFound();
+
+            //store to session
+            HttpContext.Session.SetString("CurrentCustomer", retCust.CustomerId + "");
+            return retCust;
+        }
+
+        //GET: api/Customers1/Recall
+        [HttpGet("Recall")]
+        public ActionResult<string> Recall()
+        {
+            if (HttpContext.Session.GetString("CurrentCustomer") == null) return NotFound();
+            return HttpContext.Session.GetString("CurrentCustomer");
+        }
+
     }
 }
